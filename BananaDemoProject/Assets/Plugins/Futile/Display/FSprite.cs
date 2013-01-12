@@ -1,15 +1,15 @@
 using UnityEngine;
 using System;
 
-public class FSprite : FQuadNode
+public class FSprite : FFacetNode
 {
 	public static float defaultAnchorX = 0.5f;
 	public static float defaultAnchorY = 0.5f;
 	
-	protected Color _color = Color.white;
-	protected Color _alphaColor = Color.white;
+	protected Color _color = Futile.white;
+	protected Color _alphaColor = Futile.white;
 	
-	protected Vector2[] _localVertices = new Vector2[4];
+	protected Vector2[] _localVertices;
 	
 	protected float _anchorX = defaultAnchorX;
 	protected float _anchorY = defaultAnchorY;
@@ -22,18 +22,23 @@ public class FSprite : FQuadNode
 	
 	protected FSprite() : base() //for overriding
 	{
-		
+		_localVertices = new Vector2[4];
 	}
 	
-	public FSprite (string elementName) : base()
+	public FSprite (string elementName) : this(Futile.atlasManager.GetElementWithName(elementName))
 	{
-		Init(Futile.atlasManager.GetElementWithName(elementName),1);
+	}
+	
+	public FSprite (FAtlasElement element) : base()
+	{
+		_localVertices = new Vector2[4];
+		
+		Init(FFacetType.Quad, element,1);
 		
 		_isAlphaDirty = true;
 		
 		UpdateLocalVertices();
 	}
-	
 	
 	override public void HandleElementChanged()
 	{
@@ -49,7 +54,7 @@ public class FSprite : FQuadNode
 		
 		if(shouldUpdateDepth)
 		{
-			UpdateQuads();
+			UpdateFacets();
 		}
 		
 		if(wasMatrixDirty || shouldForceDirty || shouldUpdateDepth)
@@ -74,7 +79,7 @@ public class FSprite : FQuadNode
 		}
 	}
 	
-	virtual protected void UpdateLocalVertices()
+	virtual public void UpdateLocalVertices()
 	{
 		_areLocalVerticesDirty = false;
 		
@@ -103,11 +108,11 @@ public class FSprite : FQuadNode
 	
 	override public void PopulateRenderLayer()
 	{
-		if(_isOnStage && _firstQuadIndex != -1) 
+		if(_isOnStage && _firstFacetIndex != -1) 
 		{
 			_isMeshDirty = false;
 			
-			int vertexIndex0 = _firstQuadIndex*4;
+			int vertexIndex0 = _firstFacetIndex*4;
 			int vertexIndex1 = vertexIndex0 + 1;
 			int vertexIndex2 = vertexIndex0 + 2;
 			int vertexIndex3 = vertexIndex0 + 3;
@@ -133,6 +138,12 @@ public class FSprite : FQuadNode
 			
 			_renderLayer.HandleVertsChange();
 		}
+	}
+	
+	//Note: this does not consider rotation at all!
+	public Rect GetTextureRectRelativeToContainer()
+	{
+		return _textureRect.CloneAndScaleThenOffset(_scaleX,_scaleY,_x,_y);
 	}
 	
 	virtual public Rect textureRect //the full rect as if the sprite hadn't been trimmed
@@ -200,6 +211,13 @@ public class FSprite : FQuadNode
 				_areLocalVerticesDirty = true; 
 			}
 		}
+	}
+	
+	//for convenience
+	public void SetAnchor(float newX, float newY)
+	{
+		this.anchorX = newX;
+		this.anchorY = newY;
 	}
 }
 

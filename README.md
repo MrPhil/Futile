@@ -36,11 +36,14 @@ Notes:
 ##Third Party add-ons for Futile
 
 - https://github.com/ManaOrb/FSceneManager (Futile Scene Manager and Parallax Scrolling Layer)
+- https://github.com/mattfox12/FutileAdditionalClasses (FutileAdditionalClasses including FAnimatedSprite)
 
 
 ##Legal stuff##
 
-Futile contains many ideas (as well as the MiniJSON parser) from Prime 31's UIToolkit: [github.com/Prime31/UIToolkit](http://github.com/Prime31/UIToolkit)
+Futile contains many ideas from Prime 31's UIToolkit: [github.com/Prime31/UIToolkit](http://github.com/Prime31/UIToolkit)
+
+The MiniJSON parser is by http://github.com/darktable
 
 The demo project also uses Prime31's fantastic GoKit tweening library: [github.com/Prime31/GoKit](http://github.com/Prime31/GoKit)
 
